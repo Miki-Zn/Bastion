@@ -1,6 +1,8 @@
 from rest_framework import viewsets, permissions
 from .models import Task
 from .serializers import TaskSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .throttling import LoginRateThrottle
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -12,3 +14,6 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+class ThrottledTokenObtainPairView(TokenObtainPairView):
+    throttle_classes = [LoginRateThrottle]
