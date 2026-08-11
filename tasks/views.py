@@ -3,7 +3,10 @@ from .models import Task
 from .serializers import TaskSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .throttling import LoginRateThrottle
+import logging
+from .utils import get_client_ip
 
+security_logger = logging.getLogger('security')
 
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
@@ -17,3 +20,15 @@ class TaskViewSet(viewsets.ModelViewSet):
 
 class ThrottledTokenObtainPairView(TokenObtainPairView):
     throttle_classes = [LoginRateThrottle]
+
+    def post(self, request, *args, **kwargs):
+        ip = get_client_ip(request)
+        username = request.data.get('username', 'unknown')
+        response = super().post(request, *args, **kwargs)
+
+        if response.status_code == 200:
+            security_logger.info(f"Successful login: username={username} ip={ip}")
+        else:
+            security_logger.warning(f"Failed login attempt: username={username} ip={ip} status={response.status_code}")
+
+        return response
