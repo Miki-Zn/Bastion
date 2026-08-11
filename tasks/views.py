@@ -24,11 +24,12 @@ class ThrottledTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         ip = get_client_ip(request)
         username = request.data.get('username', 'unknown')
-        response = super().post(request, *args, **kwargs)
 
-        if response.status_code == 200:
-            security_logger.info(f"Successful login: username={username} ip={ip}")
-        else:
-            security_logger.warning(f"Failed login attempt: username={username} ip={ip} status={response.status_code}")
+        try:
+            response = super().post(request, *args, **kwargs)
+        except Exception:
+            security_logger.warning(f"Failed login attempt: username={username} ip={ip}")
+            raise
 
+        security_logger.info(f"Successful login: username={username} ip={ip}")
         return response
