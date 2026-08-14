@@ -7,8 +7,8 @@ from .models import Task
 
 class TaskAPITestCase(APITestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass123')
-        self.other_user = User.objects.create_user(username='otheruser', password='testpass123')
+        self.user = User.objects.create_user(username='testuser', password='testpass123')  # nosec B106 - test fixture, not a real credential
+        self.other_user = User.objects.create_user(username='otheruser', password='testpass123')  # nosec B106 - test fixture, not a real credential
         self.task = Task.objects.create(title='My task', owner=self.user)
         self.other_task = Task.objects.create(title='Not my task', owner=self.other_user)
 

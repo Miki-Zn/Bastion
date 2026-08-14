@@ -22,6 +22,11 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+
+      - name: Run bandit security scan
+        run: |
+          bandit -r . -x ./venv,./tasks/migrations -ll
+          
       - name: Run migrations
         env:
           SECRET_KEY: ci-test-secret-key-not-for-production
