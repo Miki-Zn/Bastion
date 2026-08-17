@@ -14,7 +14,7 @@ WORKDIR /app
 COPY --from=builder /root/.local /home/bastion/.local
 COPY . .
 
-RUN chown -R bastion:bastion /app
+RUN chown -R bastion:bastion /app /home/bastion
 
 ENV PATH=/home/bastion/.local/bin:$PATH
 ENV PYTHONUNBUFFERED=1
